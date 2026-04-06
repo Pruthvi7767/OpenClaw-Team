@@ -11,8 +11,19 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Health check endpoint (required by Render)
-app.post("/validate-token", (req, res) => {
-    return res.status(200).json({ valid: true });
+
+app.post("/api/auth/validate", (req, res) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).json({ valid: false });
+    }
+
+    // optional: check token format
+    return res.status(200).json({
+        valid: true,
+        user: "local-user"
+    });
 });
 
 // Basic API endpoints
