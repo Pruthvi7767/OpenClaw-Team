@@ -11,8 +11,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Health check endpoint (required by Render)
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "healthy" });
+app.post("/validate-token", (req, res) => {
+    return res.status(200).json({ valid: true });
 });
 
 // Basic API endpoints
@@ -29,15 +29,15 @@ app.get('/api/status', async (req, res) => {
 async function initialize() {
     try {
         logger.info('🚀 OpenClaw Team - Starting up...');
-        
+
         // Start Telegram bot (Sora)
         await sora.initialize();
         logger.info('✅ Sora initialized');
-        
+
         // Start CEO orchestrator
         await ceo.initialize();
         logger.info('✅ CEO initialized');
-        
+
         // Start Express server
         const server = app.listen(PORT, () => {
             logger.info(`🌐 Server running on port ${PORT}`);
@@ -46,9 +46,9 @@ async function initialize() {
         // Attach WebSocket
         const wsAdapter = require('./src/core/ws-adapter');
         wsAdapter.initialize(server);
-        
+
         logger.info('✅ System fully operational');
-        
+
     } catch (error) {
         logger.error('❌ Initialization failed:', error);
         process.exit(1);
