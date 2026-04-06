@@ -1,3 +1,6 @@
+console.log("DEBUG ENV:");
+console.log("SUPABASE_URL =", process.env.SUPABASE_URL);
+console.log("SUPABASE_ANON_KEY =", process.env.SUPABASE_ANON_KEY);
 const { createClient } = require('@supabase/supabase-js');
 const logger = require('../utils/logger');
 
@@ -21,7 +24,7 @@ class SupabaseService {
             .eq('scheduled_date', today)
             .limit(1)
             .maybeSingle();
-            
+
         if (error) logger.error('Supabase: getClientTodaysOrder error', error);
         return data;
     }
@@ -30,7 +33,7 @@ class SupabaseService {
         const { error } = await this.client
             .from('orders')
             .upsert(order, { onConflict: 'id' });
-            
+
         if (error) logger.error('Supabase: upsertOrder error', error);
         return !error;
     }
@@ -47,7 +50,7 @@ class SupabaseService {
             .or(`and(status.eq.scheduled,scheduled_date.eq.${today}),and(status.eq.retrying,retry_at.lte.${now})`)
             .order('priority', { ascending: false })
             .order('created_at', { ascending: true });
-            
+
         if (error) logger.error('Supabase: getScheduledOrdersToday error', error);
         return data || [];
     }
