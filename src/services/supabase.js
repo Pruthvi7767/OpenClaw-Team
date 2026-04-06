@@ -1,8 +1,14 @@
-console.log("DEBUG ENV:");
-console.log("SUPABASE_URL =", process.env.SUPABASE_URL);
-console.log("SUPABASE_ANON_KEY =", process.env.SUPABASE_ANON_KEY);
-const { createClient } = require('@supabase/supabase-js');
-const logger = require('../utils/logger');
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+console.log("SUPABASE_URL:", supabaseUrl);
+console.log("SUPABASE_KEY:", supabaseKey);
+
+if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing Supabase ENV variables");
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 class SupabaseService {
     constructor() {
